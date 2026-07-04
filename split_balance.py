@@ -1,4 +1,7 @@
-import os, random, shutil
+import os
+import random
+import shutil
+
 # 数据集根目录
 root = r"D:\project\PythonProject6\raw_animal\YOLODataset"
 img_train = os.path.join(root, "images/train")
@@ -6,7 +9,7 @@ label_train = os.path.join(root, "labels/train")
 img_val = os.path.join(root, "images/val")
 label_val = os.path.join(root, "labels/val")
 # 四类ID 0牛 1羊 2马 3骆驼
-cls_img_map = {"0":[], "1":[], "2":[], "3":[]}
+cls_img_map = {"0": [], "1": [], "2": [], "3": []}
 
 # 按类别归集所有图片
 for txt_file in os.listdir(label_train):
@@ -14,7 +17,7 @@ for txt_file in os.listdir(label_train):
         continue
     txt_path = os.path.join(label_train, txt_file)
     img_name = txt_file.replace(".txt", ".jpg")
-    with open(txt_path, "r", encoding="utf-8") as f:
+    with open(txt_path, encoding="utf-8") as f:
         content = f.readlines()
         target_ids = set()
         for line in content:
