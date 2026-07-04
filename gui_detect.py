@@ -1,17 +1,26 @@
 import sys
+
 import torch
-import cv2
-import numpy as np
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel,
-                             QFileDialog, QVBoxLayout, QWidget, QTextEdit, QHBoxLayout)
-from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 # -------------------------- 配置修改处 --------------------------
 # 改成你yolov5m训练输出的exp文件夹，比如exp11、exp12
 WEIGHT_PATH = "runs/train/exp2/weights/best.pt"
 IMG_DISPLAY_WIDTH = 550
 # --------------------------------------------------------------------------------
+
 
 class AnimalDetectGUI(QMainWindow):
     def __init__(self):
@@ -22,11 +31,7 @@ class AnimalDetectGUI(QMainWindow):
         # 加载模型
         print("正在加载训练模型...")
         self.model = torch.hub.load(
-            repo_or_dir='.',
-            model='custom',
-            path=WEIGHT_PATH,
-            source='local',
-            force_reload=False
+            repo_or_dir=".", model="custom", path=WEIGHT_PATH, source="local", force_reload=False
         )
         # 关键修改：置信度提高，过滤低可信度混淆框，解决骆驼识别成牛
         self.model.conf = 0.52
@@ -73,17 +78,13 @@ class AnimalDetectGUI(QMainWindow):
 
     def select_image(self):
         # 打开文件选择窗口
-        file_path, _ = QFileDialog.getOpenFileName(
-            self, "选择图片", "", "图片文件 (*.jpg *.jpeg *.png *.bmp)"
-        )
+        file_path, _ = QFileDialog.getOpenFileName(self, "选择图片", "", "图片文件 (*.jpg *.jpeg *.png *.bmp)")
         if not file_path:
             return
         self.log_text.append(f"已选择图片：{file_path}")
 
         # 显示原图
-        origin_pix = QPixmap(file_path).scaled(
-            IMG_DISPLAY_WIDTH, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation
-        )
+        origin_pix = QPixmap(file_path).scaled(IMG_DISPLAY_WIDTH, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.label_origin.setPixmap(origin_pix)
 
         # YOLO推理识别
@@ -108,6 +109,7 @@ class AnimalDetectGUI(QMainWindow):
                 conf = round(row["confidence"], 3)
                 self.log_text.append(f"类别：{cls_name} | 置信度：{conf}")
         self.log_text.append("\n")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
